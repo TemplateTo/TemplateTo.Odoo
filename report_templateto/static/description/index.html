@@ -1,0 +1,132 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan" style="color: #875A7B;">TemplateTo Reports</h2>
+        <h3 class="oe_slogan">Replace wkhtmltopdf with modern Chrome-based PDF rendering</h3>
+        <div class="oe_span12">
+            <p class="oe_mt32 text-center" style="font-size: 1.1em;">
+                Odoo's built-in <strong>wkhtmltopdf</strong> is based on an archived, decade-old Qt WebKit engine.
+                CSS flexbox and grid don't work. Headers and footers disappear. Blank PDFs are common.
+            </p>
+            <p class="text-center" style="font-size: 1.1em;">
+                <strong>TemplateTo Reports</strong> replaces the PDF engine with a modern
+                <strong>Chromium/Chrome headless</strong> renderer &mdash; the same engine powering Google Chrome.
+                Your existing QWeb templates work unchanged. Just enable the module and enter your API key.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Features</h2>
+        <div class="oe_span4">
+            <div class="text-center">
+                <h4><strong>Modern CSS Support</strong></h4>
+                <p>Full support for CSS flexbox, grid, media queries, custom fonts, gradients,
+                   and all modern CSS properties. No more layout hacks.</p>
+            </div>
+        </div>
+        <div class="oe_span4">
+            <div class="text-center">
+                <h4><strong>Reliable Rendering</strong></h4>
+                <p>No more blank PDFs, missing headers/footers, or broken page breaks.
+                   Chrome headless renders exactly what you see in your browser.</p>
+            </div>
+        </div>
+        <div class="oe_span4">
+            <div class="text-center">
+                <h4><strong>Drop-in Replacement</strong></h4>
+                <p>Existing QWeb report templates work without any modification.
+                   Enable globally in Settings and every report uses the new engine.</p>
+            </div>
+        </div>
+    </div>
+    <div class="oe_row oe_spaced">
+        <div class="oe_span4">
+            <div class="text-center">
+                <h4><strong>Sync + Batch Generation</strong></h4>
+                <p>Interactive Print for 1-20 records with parallel API calls.
+                   Background batch processing for 20+ records with progress tracking.</p>
+            </div>
+        </div>
+        <div class="oe_span4">
+            <div class="text-center">
+                <h4><strong>Automatic Fallback</strong></h4>
+                <p>If the TemplateTo API is unreachable, automatically falls back to wkhtmltopdf.
+                   Configurable per your preferences.</p>
+            </div>
+        </div>
+        <div class="oe_span4">
+            <div class="text-center">
+                <h4><strong>Batch Job Tracking</strong></h4>
+                <p>Track progress of bulk PDF generation. Get notified when complete.
+                   Download all PDFs as a single ZIP file.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">How It Works</h2>
+        <div class="oe_span12">
+            <ol style="font-size: 1.05em; max-width: 700px; margin: 0 auto;">
+                <li class="oe_mt8"><strong>Install</strong> the module from the Odoo Apps Store.</li>
+                <li class="oe_mt8">Go to <strong>Settings &rarr; Technical &rarr; TemplateTo</strong>.</li>
+                <li class="oe_mt8">Enter your <strong>API key</strong>
+                    (get one free at <a href="https://app.templateto.com" target="_blank">app.templateto.com</a>).</li>
+                <li class="oe_mt8">Enable the toggle and click <strong>Save</strong>.</li>
+                <li class="oe_mt8">Print any report &mdash; it now uses Chrome headless rendering.</li>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Data &amp; Privacy</h2>
+        <div class="oe_span12">
+            <div class="alert alert-info" style="max-width: 700px; margin: 0 auto;">
+                <p><strong>What is sent:</strong> Only the rendered report HTML is transmitted to the
+                   TemplateTo API for PDF conversion. This is the same HTML that wkhtmltopdf receives.</p>
+                <p><strong>What is NOT sent:</strong> No Odoo credentials, database names, user data,
+                   or any metadata beyond the report HTML.</p>
+                <p><strong>Opt-in only:</strong> The module is disabled by default. You must explicitly
+                   enable it and provide an API key before any data is sent.</p>
+                <p class="mb0"><strong>API documentation:</strong>
+                   <a href="https://docs.templateto.com" target="_blank">docs.templateto.com</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Requirements</h2>
+        <div class="oe_span12 text-center">
+            <ul style="display: inline-block; text-align: left; font-size: 1.05em;">
+                <li>Odoo 18.0 Community or Enterprise</li>
+                <li>A TemplateTo account and API key
+                    (<a href="https://templateto.com" target="_blank">templateto.com</a>)</li>
+                <li>Internet connectivity from the Odoo server to the TemplateTo API</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12 text-center">
+            <h2 class="oe_slogan">Get Started</h2>
+            <p style="font-size: 1.1em;">
+                <a href="https://templateto.com" target="_blank" class="btn btn-primary btn-lg">
+                    Get Your Free API Key
+                </a>
+            </p>
+            <p>
+                <a href="https://docs.templateto.com" target="_blank">Documentation</a> |
+                <a href="https://github.com/templateto/TemplateTo.Odoo" target="_blank">Source Code (LGPL-3)</a>
+            </p>
+        </div>
+    </div>
+</section>

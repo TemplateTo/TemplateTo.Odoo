@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_templateto_batch_job_user,templateto.batch.job.user,model_templateto_batch_job,base.group_user,1,1,1,0
+access_templateto_batch_job_manager,templateto.batch.job.manager,model_templateto_batch_job,base.group_system,1,1,1,1
+access_templateto_batch_job_line_user,templateto.batch.job.line.user,model_templateto_batch_job_line,base.group_user,1,1,1,0
+access_templateto_batch_job_line_manager,templateto.batch.job.line.manager,model_templateto_batch_job_line,base.group_system,1,1,1,1
+access_templateto_batch_wizard_user,templateto.batch.generate.wizard.user,model_templateto_batch_generate_wizard,base.group_user,1,1,1,1

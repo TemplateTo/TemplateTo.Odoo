@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- "Generate PDFs with TemplateTo (Background)" action on Invoices -->
+        <record id="action_batch_generate_invoice" model="ir.actions.server">
+            <field name="name">Generate PDFs with TemplateTo (Background)</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">action</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = env['templateto.batch.job'].create_from_records(
+        records, 'account.report_invoice'
+    )
+            </field>
+        </record>
+    </data>
+</odoo>

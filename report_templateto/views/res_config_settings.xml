@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_templateto" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.templateto</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="TemplateTo" string="TemplateTo" groups="base.group_system">
+                    <block title="PDF Rendering Engine" name="templateto_settings">
+                        <div class="alert alert-info" role="alert">
+                            <strong>External Service Notice:</strong>
+                            When enabled, this module sends your QWeb-rendered report HTML
+                            to the TemplateTo API (<a href="https://api.templateto.com" target="_blank">api.templateto.com</a>)
+                            for PDF conversion. No Odoo credentials, database names, or
+                            metadata are transmitted — only the final HTML of each report.
+                            A TemplateTo account and API key are required.
+                        </div>
+                        <setting id="templateto_enabled_setting"
+                                 string="Use TemplateTo for PDF Rendering"
+                                 help="Replace wkhtmltopdf with TemplateTo's Chromium-based PDF engine for all reports.">
+                            <field name="templateto_enabled"/>
+                        </setting>
+                        <setting id="templateto_api_key_setting"
+                                 string="API Key"
+                                 help="Enter your TemplateTo API key."
+                                 invisible="not templateto_enabled">
+                            <field name="templateto_api_key" placeholder="tt_live_..."/>
+                            <div class="text-muted mt-1">
+                                <a href="https://app.templateto.com/settings/api" target="_blank">
+                                    Get your API key
+                                </a>
+                            </div>
+                        </setting>
+                        <setting id="templateto_fallback_setting"
+                                 string="Automatic Fallback"
+                                 help="If TemplateTo is unreachable, fall back to wkhtmltopdf automatically."
+                                 invisible="not templateto_enabled">
+                            <field name="templateto_fallback_enabled"/>
+                        </setting>
+                        <setting id="templateto_batch_threshold_setting"
+                                 string="Batch Generation Threshold"
+                                 help="When printing more than this many records, use background batch generation instead of blocking the UI."
+                                 invisible="not templateto_enabled">
+                            <field name="templateto_batch_threshold"/>
+                            <span class="text-muted"> records</span>
+                        </setting>
+                        <setting id="templateto_api_endpoint_setting"
+                                 string="API Endpoint (Advanced)"
+                                 help="Override the TemplateTo API URL. Only change this if instructed by TemplateTo support."
+                                 invisible="not templateto_enabled">
+                            <field name="templateto_api_endpoint"/>
+                        </setting>
+                        <setting id="templateto_test_connection_setting"
+                                 string="Test Connection"
+                                 invisible="not templateto_enabled">
+                            <button name="action_templateto_test_connection"
+                                    type="object"
+                                    string="Test Connection"
+                                    class="btn-secondary"
+                                    icon="fa-plug"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

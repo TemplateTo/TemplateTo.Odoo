@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="templateto_enabled" model="ir.config_parameter">
+            <field name="key">templateto.enabled</field>
+            <field name="value">False</field>
+        </record>
+        <record id="templateto_api_endpoint" model="ir.config_parameter">
+            <field name="key">templateto.api_endpoint</field>
+            <field name="value">https://api.templateto.com</field>
+        </record>
+        <record id="templateto_fallback_enabled" model="ir.config_parameter">
+            <field name="key">templateto.fallback_enabled</field>
+            <field name="value">True</field>
+        </record>
+        <record id="templateto_batch_threshold" model="ir.config_parameter">
+            <field name="key">templateto.batch_threshold</field>
+            <field name="value">20</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Batch Job Tree View -->
+    <record id="view_templateto_batch_job_tree" model="ir.ui.view">
+        <field name="name">templateto.batch.job.tree</field>
+        <field name="model">templateto.batch.job</field>
+        <field name="arch" type="xml">
+            <list string="Batch PDF Jobs" decoration-danger="state == 'failed'"
+                  decoration-success="state == 'done'"
+                  decoration-info="state in ('submitting', 'processing')">
+                <field name="name"/>
+                <field name="report_id"/>
+                <field name="total_count"/>
+                <field name="completed_count"/>
+                <field name="failed_count"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'failed'"
+                       decoration-success="state == 'done'"
+                       decoration-info="state in ('submitting', 'processing')"
+                       decoration-muted="state == 'draft'"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Batch Job Form View -->
+    <record id="view_templateto_batch_job_form" model="ir.ui.view">
+        <field name="name">templateto.batch.job.form</field>
+        <field name="model">templateto.batch.job</field>
+        <field name="arch" type="xml">
+            <form string="Batch PDF Job">
+                <header>
+                    <button name="action_start" string="Start"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object" class="btn-secondary"
+                            invisible="state not in ('submitting', 'processing')"
+                            confirm="Are you sure you want to cancel this batch job?"/>
+                    <button name="action_download_zip" string="Download ZIP"
+                            type="object" class="btn-primary"
+                            invisible="not zip_attachment_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitting,processing,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Job Details">
+                            <field name="report_id"/>
+                            <field name="model_name"/>
+                            <field name="total_count"/>
+                            <field name="create_date"/>
+                        </group>
+                        <group string="Progress">
+                            <field name="completed_count"/>
+                            <field name="failed_count"/>
+                            <field name="progress" widget="progressbar"/>
+                            <field name="zip_attachment_id"
+                                   invisible="not zip_attachment_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Job Lines" name="lines">
+                            <field name="job_line_ids">
+                                <list string="Job Lines"
+                                      decoration-danger="state == 'failed'"
+                                      decoration-success="state == 'done'">
+                                    <field name="res_id"/>
+                                    <field name="templateto_job_id"/>
+                                    <field name="state" widget="badge"
+                                           decoration-danger="state == 'failed'"
+                                           decoration-success="state == 'done'"
+                                           decoration-info="state == 'submitted'"/>
+                                    <field name="attachment_id"/>
+                                    <field name="error"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Error Log" name="errors"
+                              invisible="not error_log">
+                            <field name="error_log" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open batch jobs list -->
+    <record id="action_templateto_batch_job" model="ir.actions.act_window">
+        <field name="name">Batch PDF Jobs</field>
+        <field name="res_model">templateto.batch.job</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No batch PDF jobs yet
+            </p>
+            <p>
+                Select multiple records and use "Generate PDFs with TemplateTo (Background)"
+                to create batch jobs.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu entry under Settings > Technical -->
+    <menuitem id="menu_templateto_root"
+              name="TemplateTo"
+              parent="base.menu_custom"
+              sequence="90"/>
+    <menuitem id="menu_templateto_batch_jobs"
+              name="Batch PDF Jobs"
+              parent="menu_templateto_root"
+              action="action_templateto_batch_job"
+              sequence="10"/>
+</odoo>

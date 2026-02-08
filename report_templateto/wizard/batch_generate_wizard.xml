@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_batch_generate_wizard_form" model="ir.ui.view">
+        <field name="name">templateto.batch.generate.wizard.form</field>
+        <field name="model">templateto.batch.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate PDFs in Background">
+                <group>
+                    <div class="alert alert-info" role="alert" colspan="2">
+                        <strong>Background PDF Generation</strong>
+                        <p>
+                            This will submit <field name="record_count" readonly="1" class="oe_inline"/>
+                            record(s) to TemplateTo for PDF rendering in the background.
+                            You can track progress from the batch jobs list.
+                        </p>
+                    </div>
+                    <field name="model_name" invisible="1"/>
+                    <field name="res_ids" invisible="1"/>
+                    <field name="report_id"/>
+                    <field name="record_count"/>
+                </group>
+                <footer>
+                    <button name="action_generate"
+                            string="Generate PDFs"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_batch_generate_wizard" model="ir.actions.act_window">
+        <field name="name">Generate PDFs (Background)</field>
+        <field name="res_model">templateto.batch.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
