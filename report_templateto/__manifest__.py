@@ -23,7 +23,7 @@
     "author": "TemplateTo",
     "website": "https://templateto.com",
     "license": "LGPL-3",
-    "depends": ["base", "mail"],
+    "depends": ["base", "mail", "account"],
     "data": [
         "security/ir.model.access.csv",
         "data/ir_config_parameter.xml",
@@ -36,7 +36,13 @@
     "external_dependencies": {
         "python": ["requests"],
     },
-    "images": ["static/description/banner.png"],
+    "images": [
+        "static/description/banner.png",
+        "static/description/screenshot_settings.png",
+        "static/description/screenshot_invoice.png",
+        "static/description/screenshot_invoice_with_pdf.png",
+        "static/description/screenshot_batch.png",
+    ],
     "installable": True,
     "application": False,
     "auto_install": False,

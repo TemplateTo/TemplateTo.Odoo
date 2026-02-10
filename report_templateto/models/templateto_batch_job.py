@@ -98,7 +98,28 @@ class TemplateToBatchJob(models.Model):
                 "total_count": len(records),
             }
         )
+        # Submit to TemplateTo immediately instead of waiting for cron
         batch.action_start()
+        try:
+            batch._submit_async_jobs()
+            # Poll immediately — if the API is fast, we can finalize
+            # in this same request without waiting for the cron at all
+            if batch.state == "processing":
+                batch._poll_async_jobs()
+        except Exception as e:
+            _logger.error("Batch submit failed for %s: %s", batch.id, e)
+            if batch.state not in ("done", "failed"):
+                batch.write({"state": "failed", "error_log": str(e)})
+
+        # If any jobs are still pending, trigger the cron to pick them up soon
+        if batch.state == "processing":
+            cron = self.env.ref(
+                "report_templateto.ir_cron_templateto_batch_poll",
+                raise_if_not_found=False,
+            )
+            if cron:
+                cron._trigger()
+
         return {
             "type": "ir.actions.act_window",
             "res_model": "templateto.batch.job",
@@ -109,7 +130,13 @@ class TemplateToBatchJob(models.Model):
 
     @api.model
     def _cron_process_batch_jobs(self):
-        """Cron entry point: submit pending jobs, then poll processing ones."""
+        """Cron entry point: poll processing jobs and fetch results.
+
+        Submission now happens immediately in create_from_records(),
+        so this cron only handles polling and finalization.
+        Any jobs still in 'submitting' state (e.g. from a crash) are
+        also picked up here as a safety net.
+        """
         submitting = self.search([("state", "=", "submitting")])
         for batch in submitting:
             try:

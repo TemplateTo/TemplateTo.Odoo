@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="TemplateTo" string="TemplateTo" groups="base.group_system">
+                <app data-string="TemplateTo" string="TemplateTo" name="report_templateto" groups="base.group_system">
                     <block title="PDF Rendering Engine" name="templateto_settings">
                         <div class="alert alert-info" role="alert">
                             <strong>External Service Notice:</strong>
@@ -25,7 +25,7 @@
                                  string="API Key"
                                  help="Enter your TemplateTo API key."
                                  invisible="not templateto_enabled">
-                            <field name="templateto_api_key" placeholder="tt_live_..."/>
+                            <field name="templateto_api_key" placeholder="tt_live_..." widget="password"/>
                             <div class="text-muted mt-1">
                                 <a href="https://app.templateto.com/settings/api" target="_blank">
                                     Get your API key
