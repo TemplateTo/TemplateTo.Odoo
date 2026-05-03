@@ -22,6 +22,7 @@
     """,
     "author": "TemplateTo",
     "website": "https://templateto.com",
+    "support": "david@templateto.com",
     "license": "LGPL-3",
     "depends": ["base", "mail", "account"],
     "data": [
