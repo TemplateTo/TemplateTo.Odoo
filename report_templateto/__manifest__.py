@@ -1,6 +1,6 @@
 {
     "name": "TemplateTo Reports",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Technical/Reporting",
     "summary": "Replace wkhtmltopdf with modern Chrome-based PDF rendering",
     "description": """
@@ -17,8 +17,10 @@
 
         EXTERNAL SERVICE: This module sends report HTML to the TemplateTo
         API (https://api.templateto.com) for PDF conversion. A TemplateTo
-        account and API key are required. No Odoo data beyond the rendered
-        report HTML is transmitted.
+        account, active paid plan, and API key are required. The addon is
+        free and open source, but TemplateTo service usage is billed
+        separately. No Odoo data beyond the rendered report HTML is
+        transmitted.
     """,
     "author": "TemplateTo",
     "website": "https://templateto.com",
