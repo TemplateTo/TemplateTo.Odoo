@@ -1,16 +1,41 @@
 <section class="oe_container">
     <div class="oe_row oe_spaced">
         <h2 class="oe_slogan" style="color: #875A7B;">TemplateTo Reports</h2>
-        <h3 class="oe_slogan">Replace wkhtmltopdf with modern Chrome-based PDF rendering</h3>
+        <h3 class="oe_slogan">Better Odoo PDFs with Chromium &mdash; no QWeb rewrite</h3>
         <div class="oe_span12">
             <p class="oe_mt32 text-center" style="font-size: 1.1em;">
-                Odoo's built-in <strong>wkhtmltopdf</strong> is based on an archived, decade-old Qt WebKit engine.
-                CSS flexbox and grid don't work. Headers and footers disappear. Blank PDFs are common.
+                <strong>TemplateTo is a hosted document-rendering service powered by Chromium,</strong>
+                the browser engine behind Google Chrome. This addon connects your existing Odoo reports
+                to TemplateTo: Odoo produces the QWeb report HTML as usual, TemplateTo renders it as a PDF,
+                and the finished document is returned to Odoo.
             </p>
             <p class="text-center" style="font-size: 1.1em;">
-                <strong>TemplateTo Reports</strong> replaces the PDF engine with a modern
-                <strong>Chromium/Chrome headless</strong> renderer &mdash; the same engine powering Google Chrome.
-                Your existing QWeb templates work unchanged. Just enable the module and enter your API key.
+                Keep your existing QWeb templates while gaining modern CSS support, more reliable page
+                layouts, and background generation for large batches.
+            </p>
+            <div class="alert alert-warning"
+                 style="max-width: 760px; margin: 24px auto 0; font-size: 1.05em;">
+                <p class="mb0">
+                    <strong>Free addon; paid TemplateTo service required.</strong>
+                    This addon is free and open source. PDF rendering is provided by the separate
+                    TemplateTo hosted service and requires an active paid TemplateTo plan.
+                    TemplateTo usage is billed separately and is not included with the addon.
+                    <a href="https://templateto.com/#pricing" target="_blank">View TemplateTo pricing</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Why Replace wkhtmltopdf?</h2>
+        <div class="oe_span12">
+            <p class="text-center" style="font-size: 1.1em; max-width: 760px; margin: 0 auto;">
+                Odoo's built-in wkhtmltopdf renderer uses an older browser engine that does not
+                understand many modern CSS features. That can mean layout workarounds, inconsistent
+                headers and footers, broken page breaks, or blank PDFs. TemplateTo renders the same
+                report HTML with Chromium instead.
             </p>
         </div>
     </div>
@@ -72,11 +97,17 @@
         <div class="oe_span12">
             <ol style="font-size: 1.05em; max-width: 700px; margin: 0 auto;">
                 <li class="oe_mt8"><strong>Install</strong> the module from the Odoo Apps Store.</li>
-                <li class="oe_mt8">Go to <strong>Settings &rarr; Technical &rarr; TemplateTo</strong>.</li>
-                <li class="oe_mt8">Enter your <strong>API key</strong>
-                    (sign up at <a href="https://app.templateto.com" target="_blank">app.templateto.com</a>).</li>
-                <li class="oe_mt8">Enable the toggle and click <strong>Save</strong>.</li>
-                <li class="oe_mt8">Print any report &mdash; it now uses Chrome headless rendering.</li>
+                <li class="oe_mt8">
+                    <strong>Create a TemplateTo account and select a paid plan.</strong>
+                    <a href="https://app.templateto.com/auth/signup" target="_blank">Create an account</a>
+                    or <a href="https://templateto.com/#pricing" target="_blank">view pricing</a>.
+                </li>
+                <li class="oe_mt8">Go to <strong>Settings &rarr; TemplateTo</strong>.</li>
+                <li class="oe_mt8">
+                    Enter your <strong>TemplateTo API key</strong> and test the connection.
+                </li>
+                <li class="oe_mt8">Enable the integration and click <strong>Save</strong>.</li>
+                <li class="oe_mt8">Print any report &mdash; TemplateTo now renders the PDF with Chromium.</li>
             </ol>
         </div>
     </div>
@@ -108,10 +139,16 @@
         <div class="oe_span12 text-center">
             <ul style="display: inline-block; text-align: left; font-size: 1.05em;">
                 <li>Odoo 18.0 Community or Enterprise</li>
-                <li>A TemplateTo account and API key
-                    (<a href="https://templateto.com" target="_blank">templateto.com</a>)</li>
+                <li>Odoo.sh or a self-hosted Odoo installation (not Odoo Online)</li>
+                <li>
+                    A TemplateTo account, active paid plan, and API key
+                    (<a href="https://templateto.com/#pricing" target="_blank">view pricing</a>)
+                </li>
                 <li>Internet connectivity from the Odoo server to the TemplateTo API</li>
             </ul>
+            <p class="text-center">
+                The addon itself is free. TemplateTo service usage is billed separately.
+            </p>
         </div>
     </div>
 </section>
@@ -121,8 +158,12 @@
         <div class="oe_span12 text-center">
             <h2 class="oe_slogan">Get Started</h2>
             <p style="font-size: 1.1em;">
-                <a href="https://templateto.com" target="_blank" class="btn btn-primary btn-lg">
-                    Get Your API Key
+                <a href="https://app.templateto.com/auth/signup" target="_blank" class="btn btn-primary btn-lg">
+                    Create a TemplateTo Account
+                </a>
+                &nbsp;
+                <a href="https://templateto.com/#pricing" target="_blank" class="btn btn-secondary btn-lg">
+                    View Pricing
                 </a>
             </p>
             <p>
