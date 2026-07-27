@@ -193,8 +193,102 @@ class TestTemplateToSyncRendering(TransactionCase):
         )
 
         pdf = b"%PDF-1.4 single"
-        result = IrActionsReport._merge_pdfs([pdf])
+        result = IrActionsReport._templateto_merge_pdf_bytes([pdf])
         self.assertEqual(result, pdf)
+
+    def test_render_accepts_single_integer_res_id(self):
+        """Odoo 19 may pass one report record as an integer."""
+        from odoo.addons.report_templateto.models.ir_actions_report import (
+            IrActionsReport,
+        )
+
+        report = MagicMock()
+        report._get_html_bytes.return_value = b"<html>invoice</html>"
+        report._templateto_api_config.return_value = (
+            "https://api.templateto.com",
+            "test-key",
+        )
+        report._templateto_render_single.return_value = b"%PDF-1.4 fake"
+
+        result = IrActionsReport._render_via_templateto(
+            report, "account.report_invoice", 42, None
+        )
+
+        self.assertEqual(result, (b"%PDF-1.4 fake", "pdf"))
+        report._get_html_bytes.assert_called_once_with(
+            "account.report_invoice", [42], None
+        )
+
+    def test_adds_odoo_base_url_to_report_html(self):
+        """Relative Odoo report assets can load in TemplateTo Chromium."""
+        self.ICP.set_param(
+            "web.base.url", "https://odoo.example.test/tenant"
+        )
+        html_bytes = (
+            b'<html><head><link href="/web/assets/report.css"></head>'
+            b"<body>Invoice</body></html>"
+        )
+
+        result = self.Report._templateto_add_base_url(html_bytes)
+
+        self.assertIn(
+            b'<head><base href="https://odoo.example.test/tenant/">',
+            result,
+        )
+
+    def test_preserves_existing_base_url(self):
+        """Do not add a second base tag when a report supplies its own."""
+        self.ICP.set_param("web.base.url", "https://odoo.example.test")
+        html_bytes = (
+            b'<html><head><base href="https://custom.example/">'
+            b"</head><body>Invoice</body></html>"
+        )
+
+        result = self.Report._templateto_add_base_url(html_bytes)
+
+        self.assertEqual(result, html_bytes)
+        self.assertEqual(result.lower().count(b"<base "), 1)
+
+    def test_inlines_odoo_report_stylesheet(self):
+        """Compiled report CSS is embedded for reliable multi-DB rendering."""
+        asset_url = "/web/assets/templateto-test-report.css"
+        self.env["ir.attachment"].sudo().create(
+            {
+                "name": "TemplateTo test report CSS",
+                "url": asset_url,
+                "type": "binary",
+                "mimetype": "text/css",
+                "raw": b"body { color: #123456; }",
+            }
+        )
+        html_bytes = (
+            b'<html><head><link rel="stylesheet" href="'
+            + asset_url.encode("ascii")
+            + b'"></head><body>Invoice</body></html>'
+        )
+
+        result = self.Report._templateto_inline_report_stylesheets(html_bytes)
+
+        self.assertNotIn(b"<link", result)
+        self.assertIn(
+            b'<style type="text/css" data-templateto-asset="'
+            + asset_url.encode("ascii")
+            + b'">',
+            result,
+        )
+        self.assertIn(b"body { color: #123456; }", result)
+
+    def test_preserves_missing_odoo_report_stylesheet(self):
+        """A missing asset remains linked rather than losing all styling."""
+        html_bytes = (
+            b'<html><head><link rel="stylesheet" '
+            b'href="/web/assets/templateto-missing.css"></head>'
+            b"<body>Invoice</body></html>"
+        )
+
+        result = self.Report._templateto_inline_report_stylesheets(html_bytes)
+
+        self.assertEqual(result, html_bytes)
 
 
 class TestTemplateToBatchJob(TransactionCase):

@@ -2,6 +2,12 @@
 
 Replace Odoo's default **wkhtmltopdf** PDF engine with **TemplateTo's Chromium-based rendering API**.
 
+> [!IMPORTANT]
+> **The addon is free and open source; the TemplateTo service is not free.**
+> PDF rendering requires a TemplateTo account with an active paid plan.
+> TemplateTo usage is billed separately and is not included with the addon.
+> [View TemplateTo pricing](https://templateto.com/#pricing).
+
 ## What it does
 
 - **Drop-in replacement**: existing QWeb report templates work unchanged
@@ -13,8 +19,12 @@ Replace Odoo's default **wkhtmltopdf** PDF engine with **TemplateTo's Chromium-b
 
 ## Requirements
 
-- Odoo 18.0 (Community or Enterprise)
-- A TemplateTo account and API key ([sign up](https://app.templateto.com))
+- Odoo 19.0 (Community or Enterprise)
+- Odoo.sh or a self-hosted Odoo installation (not Odoo Online)
+- A TemplateTo account with an active paid plan and an API key
+  ([view pricing](https://templateto.com/#pricing),
+  [create an account](https://app.templateto.com/auth/signup))
+- Internet connectivity from your Odoo server to the TemplateTo API
 
 ## Installation
 

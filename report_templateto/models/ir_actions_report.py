@@ -1,5 +1,7 @@
 import base64
+import html
 import logging
+import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
@@ -11,6 +13,14 @@ _logger = logging.getLogger(__name__)
 
 TIMEOUT_SECONDS = 60
 MAX_PARALLEL = 6  # Matches TemplateTo rate limit (6 tokens)
+HTML_LINK_PATTERN = re.compile(rb"<link\b[^>]*>", re.IGNORECASE)
+STYLESHEET_REL_PATTERN = re.compile(
+    rb"""\brel=(["'])stylesheet\1""", re.IGNORECASE
+)
+ODOO_ASSET_HREF_PATTERN = re.compile(
+    rb"""\bhref=(["'])(?P<url>/web/assets/[^"']+\.css(?:\?[^"']*)?)\1""",
+    re.IGNORECASE,
+)
 
 
 class IrActionsReport(models.Model):
@@ -93,6 +103,11 @@ class IrActionsReport(models.Model):
         ``MAX_PARALLEL`` concurrent requests), then merge the resulting
         PDFs.
         """
+        # Odoo 19 explicitly accepts either one integer or a list here.
+        # Normalise the single-ID form before applying our batch logic.
+        if isinstance(res_ids, int):
+            res_ids = [res_ids]
+
         if res_ids and len(res_ids) > 1:
             return self._render_via_templateto_parallel(
                 report_ref, res_ids, data
@@ -136,7 +151,7 @@ class IrActionsReport(models.Model):
 
         # Merge PDFs in the order of res_ids
         pdf_pages = [results[rid] for rid in res_ids]
-        merged = self._merge_pdfs(pdf_pages)
+        merged = self._templateto_merge_pdf_bytes(pdf_pages)
         return merged, "pdf"
 
     # ------------------------------------------------------------------
@@ -152,7 +167,102 @@ class IrActionsReport(models.Model):
         )
         if isinstance(html_data, str):
             html_data = html_data.encode("utf-8")
-        return html_data
+        html_data = self._templateto_inline_report_stylesheets(html_data)
+        return self._templateto_add_base_url(html_data)
+
+    def _templateto_inline_report_stylesheets(self, html_bytes):
+        """Inline Odoo report CSS so rendering does not depend on DB routing.
+
+        Odoo's generated report HTML points at relative ``/web/assets`` URLs.
+        An absolute base URL is sufficient for a single-database deployment,
+        but a multi-database server can reject those requests when no database
+        selector is present.  The compiled asset is already stored as an
+        ``ir.attachment``, so embed it directly in the document sent to
+        TemplateTo.
+        """
+
+        def replace_stylesheet(link_match):
+            link_tag = link_match.group(0)
+            if not STYLESHEET_REL_PATTERN.search(link_tag):
+                return link_tag
+
+            href_match = ODOO_ASSET_HREF_PATTERN.search(link_tag)
+            if not href_match:
+                return link_tag
+
+            asset_url = html.unescape(
+                href_match.group("url").decode("utf-8")
+            )
+            attachment_url = asset_url.split("?", maxsplit=1)[0]
+            attachment = self.env["ir.attachment"].sudo().search(
+                [
+                    ("url", "=", attachment_url),
+                    ("mimetype", "=", "text/css"),
+                ],
+                limit=1,
+            )
+            css_bytes = attachment.raw if attachment else b""
+            if not css_bytes:
+                _logger.warning(
+                    "TemplateTo could not inline Odoo report stylesheet %s; "
+                    "leaving its link unchanged.",
+                    attachment_url,
+                )
+                return link_tag
+
+            # Prevent a pathological CSS comment/string from closing the HTML
+            # raw-text element early.
+            css_bytes = css_bytes.replace(b"</style", b"<\\/style")
+            escaped_url = html.escape(asset_url, quote=True).encode("utf-8")
+            return (
+                b'<style type="text/css" data-templateto-asset="'
+                + escaped_url
+                + b'">'
+                + css_bytes
+                + b"</style>"
+            )
+
+        return HTML_LINK_PATTERN.sub(replace_stylesheet, html_bytes)
+
+    def _templateto_add_base_url(self, html_bytes):
+        """Make Odoo's relative report asset URLs resolvable by Chromium.
+
+        QWeb report HTML references bundles such as ``/web/assets/...``.
+        TemplateTo renders the HTML in a new browser document, so those
+        relative URLs need Odoo's public base URL to resolve correctly.
+        """
+        lowered_html = html_bytes.lower()
+        if b"<base " in lowered_html:
+            return html_bytes
+
+        base_url = self.env["ir.config_parameter"].sudo().get_param(
+            "web.base.url", ""
+        )
+        if not base_url:
+            return html_bytes
+
+        head_start = lowered_html.find(b"<head")
+        if head_start == -1:
+            _logger.warning(
+                "TemplateTo could not add Odoo's base URL because the "
+                "rendered report HTML has no <head> element."
+            )
+            return html_bytes
+
+        head_end = html_bytes.find(b">", head_start)
+        if head_end == -1:
+            return html_bytes
+
+        escaped_base_url = html.escape(
+            base_url.rstrip("/") + "/", quote=True
+        )
+        base_tag = ('<base href="%s">' % escaped_base_url).encode("utf-8")
+        insertion_point = head_end + 1
+        return (
+            html_bytes[:insertion_point]
+            + base_tag
+            + html_bytes[insertion_point:]
+        )
 
     # ------------------------------------------------------------------
     # API call (thread-safe, no ORM usage)
@@ -200,8 +310,12 @@ class IrActionsReport(models.Model):
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _merge_pdfs(pdf_list):
+    def _templateto_merge_pdf_bytes(pdf_list):
         """Merge a list of raw PDF byte strings into a single PDF.
+
+        This deliberately does not use Odoo's ``_merge_pdfs`` method name.
+        Odoo 19 calls that core hook with a different signature while
+        rendering ordinary reports, including our fallback path.
 
         Uses PyPDF2 if available (common in Odoo environments), falls
         back to simple concatenation-safe pypdf, or as a last resort

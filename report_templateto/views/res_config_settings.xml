@@ -14,7 +14,13 @@
                             to the TemplateTo API (<a href="https://api.templateto.com" target="_blank">api.templateto.com</a>)
                             for PDF conversion. No Odoo credentials, database names, or
                             metadata are transmitted — only the final HTML of each report.
-                            A TemplateTo account and API key are required.
+                            <br/><br/>
+                            <strong>Free addon; paid service required:</strong>
+                            The addon is free and open source. PDF rendering requires a
+                            TemplateTo account with an active paid plan, billed separately.
+                            <a href="https://templateto.com/#pricing" target="_blank">
+                                View TemplateTo pricing
+                            </a>.
                         </div>
                         <setting id="templateto_enabled_setting"
                                  string="Use TemplateTo for PDF Rendering"
@@ -27,9 +33,10 @@
                                  invisible="not templateto_enabled">
                             <field name="templateto_api_key" placeholder="tt_live_..." widget="password"/>
                             <div class="text-muted mt-1">
-                                <a href="https://app.templateto.com/settings/api" target="_blank">
+                                <a href="https://app.templateto.com/generate/api-keys" target="_blank">
                                     Get your API key
                                 </a>
+                                after selecting a TemplateTo plan.
                             </div>
                         </setting>
                         <setting id="templateto_fallback_setting"
